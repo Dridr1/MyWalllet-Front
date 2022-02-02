@@ -9,7 +9,7 @@ export default function SignIn() {
                 <Input placeholder='Senha' type="password" />
                 <Button>Entrar</Button>
             </Form>
-            <SignUpLink to="/sign-in">Primeira vez? Cadastre-se!</SignUpLink>
+            <SignUpLink to="/sign-up">Primeira vez? Cadastre-se!</SignUpLink>
         </Container>
     );
 }
