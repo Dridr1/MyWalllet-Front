@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Title, Form, Input, Button, SignUpLink } from './Styles';
+import { signIn } from '../../services/api';
+import AuthContext from '../../contexts/authContext';
+import { useNavigate } from 'react-router-dom';
+
 export default function SignIn() {
+    const navigate = useNavigate();
+
+    const [loginData, setLoginData] = useState({email: '', password: ''});
+
+    const {setToken} = useContext(AuthContext);
+
+    const handleChange = e => {
+        setLoginData({...loginData, [e.target.name]: e.target.value});
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        const promise = signIn({...loginData});
+        promise.then( ans => {
+            setToken(ans.data);
+            navigate('/home');
+        } ).catch(err => console.log(err));
+    }
+
     return (
         <Container>
             <Title>MyWallet</Title>
-            <Form>
-                <Input placeholder='E-mail' type="email" />
-                <Input placeholder='Senha' type="password" />
+            <Form onSubmit={handleSubmit}>
+                <Input onChange={handleChange} name='email' placeholder='E-mail' type="email" />
+                <Input onChange={handleChange} name='password' placeholder='Senha' type="password" />
                 <Button>Entrar</Button>
             </Form>
             <SignUpLink to="/sign-up">Primeira vez? Cadastre-se!</SignUpLink>
