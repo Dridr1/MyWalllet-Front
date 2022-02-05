@@ -18,7 +18,11 @@ export default function NewExit() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        const promise = newMovement(entryData, token);
+
+        const body = entryData;
+        body.value = body.value.replace(',', '.');
+        const promise = newMovement(body, token);
+        
         promise.then( () => {
             navigate('/home');
         }).catch(err => console.log(err));
