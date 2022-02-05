@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container, Title, Form, Input, Button, SignUpLink } from './Styles';
 import { signIn } from '../../services/api';
 import AuthContext from '../../contexts/authContext';
@@ -20,9 +20,20 @@ export default function SignIn() {
         const promise = signIn({...loginData});
         promise.then( ans => {
             setToken(ans.data);
+            localStorage.setItem('user', JSON.stringify(ans.data));
             navigate('/home');
         } ).catch(err => console.log(err));
     }
+
+    useEffect(() => {
+        const userLocal = localStorage.getItem('user');
+        if( userLocal !== null){
+            const filtered = JSON.parse(userLocal);
+            setToken(filtered);
+            navigate('/home');
+        }
+    }, [navigate, setToken])
+
 
     return (
         <Container>
