@@ -33,3 +33,19 @@ export const newMovement = (body, token) => {
 
     return promise;
 }
+
+export const updateMovement = (body, token, id) => {
+    const config = tokenConfig(token);
+
+    const promise = axios.put(`${BASE_URL}/movements?id=${id}`, body, config);
+
+    return promise;
+}
+
+export const deleteMovement = (token, id) => {
+    const config = tokenConfig(token);
+
+    const promise = axios.delete(`${BASE_URL}/movements?id=${id}`, config);
+
+    return promise;
+}
