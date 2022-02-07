@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { HomeContainer, Header, Registers, Options, Mov, MovInfo, MovValue, NoMovements, MovContainer, Balance, BalanceLegend, BalanceValue } from "./Styles";
 import { useNavigate } from 'react-router-dom';
-import { getMovements } from '../../services/api';
+import { deleteMovement, getMovements } from '../../services/api';
 import AuthContext from "../../contexts/authContext"
+import MovementIdContext from '../../contexts/movementIDContext';
+
 export default function Home() {
     const navigate = useNavigate();
     const { token } = useContext(AuthContext);
+    const { setMovementID } = useContext(MovementIdContext);
     const [homeData, setHomeData] = useState({ name: '', balance: 0, movements: [] });
 
     const loadMovements = () => {
@@ -18,6 +21,23 @@ export default function Home() {
             console.log(err);
             navigate('/');
         })
+    }
+
+    const goToUpdateEntry = id => {
+        setMovementID(id);
+        navigate('/update-entry');
+    }
+
+    const goToUpdateExit = id => {
+        setMovementID(id);
+        navigate('/update-exit');
+    }
+
+    const deleteMov = id => {
+        if(window.confirm("Você quer mesmo deletar essa movimentação?")){
+            deleteMovement(token, id);
+        }
+        loadMovements();
     }
 
     useEffect(loadMovements, [token, navigate]);
@@ -45,16 +65,21 @@ export default function Home() {
                                 <Mov key={movement._id}>
                                     <MovInfo>
                                         <span>{movement.date}</span>
-                                        <p>{movement.description}</p>
+                                        {movement.type === 'entry'
+                                            ?
+                                            <p onClick={() => { goToUpdateEntry(movement._id) }}>{movement.description}</p>
+                                            :
+                                            <p onClick={() => { goToUpdateExit(movement._id) }}>{movement.description}</p>
+                                        }
                                     </MovInfo>
-                                    <MovValue entry={movement.type === 'entry' ? true : false}>{String(parseFloat(movement.value).toFixed(2)).replace('.', ',')}</MovValue>
+                                    <MovValue entry={movement.type === 'entry' ? true : false}>{String(parseFloat(movement.value).toFixed(2)).replace('.', ',')} <span onClick={() => deleteMov(movement._id)}>X</span></MovValue>
                                 </Mov>
                             ))
                     }
                 </MovContainer>
                 <Balance>
                     <BalanceLegend>SALDO</BalanceLegend>
-                    <BalanceValue>{homeData.balance}</BalanceValue>
+                    <BalanceValue positive={homeData.balance > 0 ? true : false}>{homeData.balance}</BalanceValue>
                 </Balance>
             </Registers>
 

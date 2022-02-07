@@ -101,14 +101,25 @@ const MovInfo = styled.div`
         font-size: 16px;
         line-height: 19px;    
         color: #000000;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
     }
 `;
 
 const MovValue = styled.div`
+    display: flex;
+    gap: 10px;
     font-size: 16px;
     line-height: 19px;
     text-align: right;
     color: ${props => props.entry ? '#5CAE13' : '#C70000'};
+    span{
+        font-size: 16px;
+        line-height: 19px;
+        color: #C6C6C6;
+    }
 `;
 
 const NoMovements = styled.div`
@@ -136,7 +147,7 @@ const BalanceValue = styled.div`
     font-size: 17px;
     line-height: 20px;
     text-align: right;
-    color: #03AC00;
+    color: ${props => props.positive ? '#5CAE13' : '#C70000'};
 `;
 
 export {
